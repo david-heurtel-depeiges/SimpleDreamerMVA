@@ -4,7 +4,7 @@ os.environ["MUJOCO_GL"] = "egl"
 
 import argparse
 from datetime import datetime
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 from dreamer.algorithms.dreamer import Dreamer
 from dreamer.algorithms.plan2explore import Plan2Explore
@@ -39,20 +39,22 @@ def main(config_file):
     obs_shape, discrete_action_bool, action_size = get_env_infos(env)
 
     log_dir = (
-        get_base_directory()
+        '/mnt/home/heurtel/ceph/dreamer'
         + "/runs/"
         + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         + "_"
         + config.operation.log_dir
     )
-    writer = SummaryWriter(log_dir)
+
+    #writer = SummaryWriter(log_dir)
     device = config.operation.device
 
     if config.algorithm == "dreamer-v1":
         agent = Dreamer(
-            obs_shape, discrete_action_bool, action_size, writer, device, config
+            obs_shape, discrete_action_bool, action_size, device, config
         )
     elif config.algorithm == "plan2explore":
+        writer = None
         agent = Plan2Explore(
             obs_shape, discrete_action_bool, action_size, writer, device, config
         )

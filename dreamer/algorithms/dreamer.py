@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
-
+import wandb
 from dreamer.modules.model import RSSM, RewardModel, ContinueModel
 from dreamer.modules.encoder import Encoder
 from dreamer.modules.decoder import Decoder
@@ -22,7 +22,6 @@ class Dreamer:
         observation_shape,
         discrete_action_bool,
         action_size,
-        writer,
         device,
         config,
     ):
@@ -67,8 +66,8 @@ class Dreamer:
 
         self.dynamic_learning_infos = DynamicInfos(self.device)
         self.behavior_learning_infos = DynamicInfos(self.device)
-
-        self.writer = writer
+        run = wandb.init(project="dreamer", entity="dheurtel", notes = config.environment.benchmark)
+        wandb.config.update(config)
         self.num_total_episode = 0
 
     def train(self, env):
@@ -287,13 +286,15 @@ class Dreamer:
                 if done:
                     if train:
                         self.num_total_episode += 1
-                        self.writer.add_scalar(
-                            "training score", score, self.num_total_episode
-                        )
+                        #self.writer.add_scalar(
+                        #    "training score", score, self.num_total_episode
+                        #)
+                        wandb.log({"training score": score})
                     else:
                         score_lst = np.append(score_lst, score)
                     break
         if not train:
             evaluate_score = score_lst.mean()
             print("evaluate score : ", evaluate_score)
-            self.writer.add_scalar("test score", evaluate_score, self.num_total_episode)
+            #self.writer.add_scalar("test score", evaluate_score, self.num_total_episode)
+            wandb.log({"test score": evaluate_score})
