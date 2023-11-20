@@ -1,6 +1,6 @@
 import os
 
-#os.environ["MUJOCO_GL"] = "egl"
+os.environ["MUJOCO_GL"] = "egl"
 
 import argparse
 from datetime import datetime
