@@ -39,7 +39,7 @@ def main(config_file):
     obs_shape, discrete_action_bool, action_size = get_env_infos(env)
 
     log_dir = (
-        '/mnt/home/heurtel/ceph/dreamer'
+        '/path/to/logdir'
         + "/runs/"
         + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         + "_"
